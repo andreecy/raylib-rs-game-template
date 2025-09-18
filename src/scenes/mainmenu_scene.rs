@@ -21,8 +21,8 @@ impl Scene for MainMenuScene {
     }
 
     fn draw(&mut self, d: &mut raylib::core::drawing::RaylibDrawHandle) {
-        d.clear_background(Color::WHITE);
-        d.draw_text("Main Menu Scene", 12, 12, 20, Color::BLACK);
+        d.clear_background(Color::BLACK);
+        d.draw_text("Main Menu Scene", 12, 12, 20, Color::GREEN);
     }
 
     fn destroy(&mut self) {}
