@@ -1,19 +1,18 @@
 use super::mainmenu_scene::MainMenuScene;
 use raylib::prelude::*;
 
-pub enum SceneChange {
-    None,
-    Change(Box<dyn Scene>),
-}
-
 pub trait Scene {
     fn init(&mut self) {}
 
-    fn update(&mut self, d: &mut raylib::core::drawing::RaylibDrawHandle) -> SceneChange;
+    fn update(&mut self, d: &mut raylib::core::drawing::RaylibDrawHandle);
 
     fn draw(&mut self, d: &mut raylib::core::drawing::RaylibDrawHandle);
 
     fn destroy(&mut self) {}
+
+    fn get_next_scene(&mut self) -> Option<Box<dyn Scene>> {
+        None
+    }
 }
 
 pub struct SceneManager {
@@ -68,12 +67,12 @@ impl SceneManager {
 
     pub fn update(&mut self, d: &mut raylib::core::drawing::RaylibDrawHandle) {
         if !self.on_transition {
-            let change_request = self.current_scene.update(d);
-            if let SceneChange::Change(new_scene) = change_request {
+            if let Some(new_scene) = self.current_scene.get_next_scene() {
                 // Store the new scene and start the fade-out
                 self.next_scene = Some(new_scene);
                 self.start_transition();
             }
+            self.current_scene.update(d);
         } else {
             self.update_transition();
         }
